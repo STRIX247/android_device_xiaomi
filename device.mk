@@ -488,6 +488,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     WfdCommon
 
-#Build offline charging animation 
+#Build Pixel offline charging animation 
 PRODUCT_PACKAGES += \
-    charger_res_images
+    charger_res_images \
+	product_charger_res_images
