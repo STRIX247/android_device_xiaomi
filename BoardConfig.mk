@@ -126,6 +126,8 @@ TARGET_USES_ION := true
 # HIDL
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
+ODM_MANIFEST_WILLOW_FILES := $(DEVICE_PATH)/manifest_willow.xml
+ODM_MANIFEST_SKUS += willow
 
 # Media
 TARGET_USES_MEDIA_EXTENSIONS := true
