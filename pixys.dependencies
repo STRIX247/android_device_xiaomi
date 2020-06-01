@@ -1,0 +1,12 @@
+[
+  {
+	 "url":"https://github.com/PixysOS-Devices/vendor_xiaomi_ginkgo.git",
+	 "target_path":"vendor/xiaomi/ginkgo",
+	 "branch":"ten"
+  },
+  {
+	 "url":"https://github.com/trinket-devs/kernel_xiaomi_ginkgo.git",
+	 "target_path":"kernel/xiaomi/ginkgo",
+	 "branch":"10.0"
+  }
+]
