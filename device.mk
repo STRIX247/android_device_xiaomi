@@ -489,3 +489,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BOOT_JARS += \
     WfdCommon
+
+#Build offline charging animation 
+PRODUCT_PACKAGES += \
+    charger_res_images
