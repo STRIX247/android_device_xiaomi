@@ -164,18 +164,29 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # SurfaceFlinger
 PRODUCT_PROPERTY_OVERRIDES += \
+    debug.sf.disable_backpressure=1 \
+    debug.sf.enable_gl_backpressure=1 \
+    debug.sf.early_app_phase_offset_ns=1500000 \
+    debug.sf.early_gl_app_phase_offset_ns=15000000 \
+    debug.sf.early_gl_phase_offset_ns=3000000 \
+    debug.sf.early_phase_offset_ns=1500000 \
     ro.surface_flinger.force_hwc_copy_for_virtual_displays=true \
     ro.surface_flinger.max_frame_buffer_acquired_buffers=3 \
     ro.surface_flinger.max_virtual_display_dimension=4096 \
     ro.surface_flinger.protected_contents=true \
     ro.surface_flinger.vsync_event_phase_offset_ns=2000000 \
-    ro.surface_flinger.vsync_sf_event_phase_offset_ns=6000000
+    ro.surface_flinger.vsync_sf_event_phase_offset_ns=6000000 \
+	debug.sf.enable_hwc_vds=0
 
+# Time
 PRODUCT_PROPERTY_OVERRIDES += \
-    debug.sf.disable_backpressure=1 \
-    debug.sf.enable_gl_backpressure=1 \
-    debug.sf.early_app_phase_offset_ns=500000 \
-    debug.sf.early_gl_app_phase_offset_ns=15000000 \
-    debug.sf.early_gl_phase_offset_ns=3000000 \
-    debug.sf.early_phase_offset_ns=500000 \
-    debug.sf.enable_hwc_vds=0
+    persist.vendor.delta_time.enable=true
+
+# WFD
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.debug.wfd.enable=1 \
+    persist.sys.wfd.virtual=0
+
+# Zygote preforking
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.device_config.runtime_native.usap_pool_enabled=true
