@@ -28,8 +28,6 @@
 */
 
 #include <cstdlib>
-#include <cstdio>
-#include <fstream>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
@@ -49,20 +47,6 @@ void property_override(string prop, string value)
         __system_property_update(pi, value.c_str(), value.size());
     else
         __system_property_add(prop.c_str(), prop.size(), value.c_str(), value.size());
-}
-
-bool has_tianma_panel()
-{
-    std::ifstream cmdline("/proc/cmdline");
-    string line;
-    bool ret = false;
-
-    std::getline(cmdline, line);
-    if (line.find("tianma") != string::npos)
-        ret = true;
-
-    cmdline.close();
-    return ret;
 }
 
 void vendor_load_properties()
@@ -92,24 +76,47 @@ void vendor_load_properties()
         property_override(string("ro.") + prop + string("build.fingerprint"), fp);
     }
 
-    // Hax for Tianma panels burn-in issue
-    // https://forum.xda-developers.com/redmi-note-8/how-to/huge-issue-custom-roms-spoiling-display-t4075133
-    if (has_tianma_panel()) {
-        FILE *red = fopen("/sys/module/msm_drm/parameters/kcal_red", "wb");
-        FILE *green = fopen("/sys/module/msm_drm/parameters/kcal_green", "wb");
-        FILE *blue = fopen("/sys/module/msm_drm/parameters/kcal_blue", "wb");
+    // Set dalvik heap configuration
+    char const *heapstartsize;
+    char const *heapgrowthlimit;
+    char const *heapsize;
+    char const *heapminfree;
+    char const *heapmaxfree;
+    char const *heaptargetutilization;
 
-        // Incase the kernel doesn't have KCAL support
-        if (red != NULL && green != NULL && blue != NULL) {
-            // 90% is the desired rgb value to prevent burn-in in Tianma panels
-            // 90% of default value 256 = 230.4 ~= 230
-            fprintf(red, "230\n");
-            fprintf(green, "230\n");
-            fprintf(blue, "230\n");
+    struct sysinfo sys;
+    sysinfo(&sys);
 
-            fclose(red);
-            fclose(green);
-            fclose(blue);
-        }
+    if (sys.totalram > 5072ull * 1024 * 1024) {
+        // from - phone-xhdpi-6144-dalvik-heap.mk
+        heapstartsize = "16m";
+        heapgrowthlimit = "256m";
+        heapsize = "512m";
+        heaptargetutilization = "0.5";
+        heapminfree = "8m";
+        heapmaxfree = "32m";
+    } else if (sys.totalram > 3072ull * 1024 * 1024) {
+        // from - phone-xhdpi-4096-dalvik-heap.mk
+        heapstartsize = "8m";
+        heapgrowthlimit = "192m";
+        heapsize = "512m";
+        heaptargetutilization = "0.6";
+        heapminfree = "8m";
+        heapmaxfree = "16m";
+    } else {
+        // from - phone-xhdpi-2048-dalvik-heap.mk
+        heapstartsize = "8m";
+        heapgrowthlimit = "192m";
+        heapsize = "512m";
+        heaptargetutilization = "0.75";
+        heapminfree = "512k";
+        heapmaxfree = "8m";
     }
+
+    property_set("dalvik.vm.heapstartsize", heapstartsize);
+    property_set("dalvik.vm.heapgrowthlimit", heapgrowthlimit);
+    property_set("dalvik.vm.heapsize", heapsize);
+    property_set("dalvik.vm.heaptargetutilization", heaptargetutilization);
+    property_set("dalvik.vm.heapminfree", heapminfree);
+    property_set("dalvik.vm.heapmaxfree", heapmaxfree);
 }
